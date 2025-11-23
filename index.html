@@ -2201,13 +2201,14 @@
             }
 
             function updateShareableLink(pcName, date) {
-                // Use current page URL
-                const currentURL = window.location.origin + window.location.pathname;
+                // Use hardcoded URL as requested
+                const currentURL = 'https://ast4rt3.github.io/scanner_mobile/index.html';
                 const url = new URL(currentURL);
                 url.searchParams.set('pc', pcName);
-                if (date) {
-                    url.searchParams.set('date', date);
-                }
+                // Date parameter removed as requested
+                // if (date) {
+                //     url.searchParams.set('date', date);
+                // }
                 const shareableLink = document.getElementById('shareableLink');
                 if (shareableLink) {
                     shareableLink.value = url.toString();
