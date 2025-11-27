@@ -1746,12 +1746,13 @@
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>Mount Point</th>
+                                            <th>Drive Name</th>
                                             <th>Label</th>
                                             <th>Total</th>
                                             <th>Used</th>
                                             <th>Available</th>
                                             <th>Usage</th>
+                                            <th>Last Updated</th>
                                         </tr>
                                     </thead>
                                     <tbody id="storageTableBody">
@@ -1932,7 +1933,7 @@
                                 .ilike('pc_name', pcNameFilter)
                                 .gte('created_at', startDate)
                                 .lte('created_at', endDate)
-                                .order('created_at', { ascending: true });
+                                .order('created_at', { ascending: false });
 
                             // Fetch power/voltage logs
                             const { data: powerVoltageData } = await supabase
@@ -1941,7 +1942,7 @@
                                 .ilike('pc_name', pcNameFilter)
                                 .gte('created_at', startDate)
                                 .lte('created_at', endDate)
-                                .order('created_at', { ascending: true });
+                                .order('created_at', { ascending: false });
 
                             // Merge app and idle data
                             let combinedData = [...(appData || [])];
@@ -2030,8 +2031,10 @@
                         if (!chartCanvas) return;
 
                         // Prepare data (keep time formatting consistent with tables)
-                        const labels = newData.map(entry => formatTime(entry.created_at));
-                        const data = newData.map(entry => entry.cpu_temperature);
+                        // Reverse for chart (oldest to newest)
+                        const chartData = [...newData].reverse();
+                        const labels = chartData.map(entry => formatTime(entry.created_at));
+                        const data = chartData.map(entry => entry.cpu_temperature);
 
                         // Update chart if exists, create if not
                         if (temperatureChart) {
@@ -2131,9 +2134,11 @@
                         allPowerVoltageData = newData;
 
                         // Prepare data (keep time formatting consistent with temperature)
-                        const labels = newData.map(entry => formatTime(entry.created_at));
-                        const voltageData = newData.map(entry => entry.cpu_voltage);
-                        const powerData = newData.map(entry => entry.cpu_power);
+                        // Reverse for chart (oldest to newest)
+                        const chartData = [...newData].reverse();
+                        const labels = chartData.map(entry => formatTime(entry.created_at));
+                        const voltageData = chartData.map(entry => entry.cpu_voltage);
+                        const powerData = chartData.map(entry => entry.cpu_power);
 
                         // Update chart if exists, create if not
                         if (powerVoltageChart) {
@@ -2791,7 +2796,7 @@
                                 .ilike('pc_name', pcNameFilter)
                                 .gte('created_at', startDate)
                                 .lte('created_at', endDate)
-                                .order('created_at', { ascending: true });
+                                .order('created_at', { ascending: false });
 
                             if (tempError) {
                                 console.warn('Temperature data error:', tempError);
@@ -2804,7 +2809,7 @@
                                 .ilike('pc_name', pcNameFilter)
                                 .gte('created_at', startDate)
                                 .lte('created_at', endDate)
-                                .order('created_at', { ascending: true });
+                                .order('created_at', { ascending: false });
 
                             if (powerVoltageError) {
                                 console.warn('Power/Voltage data error:', powerVoltageError);
@@ -2973,8 +2978,8 @@
                     }
 
                     function processTemperatureData(tempData) {
-                        // Create/update chart
-                        createTemperatureChart(tempData);
+                        // Create/update chart (reverse for chronological order)
+                        createTemperatureChart([...tempData].reverse());
 
                         // Store data for pagination
                         const tbody = document.getElementById('temperatureTableBody');
@@ -3192,8 +3197,8 @@
                     }
 
                     function processPowerVoltageData(powerVoltageData) {
-                        // Create/update chart
-                        createPowerVoltageChart(powerVoltageData);
+                        // Create/update chart (reverse for chronological order)
+                        createPowerVoltageChart([...powerVoltageData].reverse());
 
                         // Store data for pagination
                         const tbody = document.getElementById('powerVoltageTableBody');
@@ -4384,8 +4389,8 @@
 
                             return `
                                 <tr>
-                                    <td style="font-weight: 600;">${escapeHtml(vol.mount_point)}</td>
-                                    <td>${escapeHtml(vol.label || '-')}</td>
+                                    <td style="font-weight: 600;">${escapeHtml(vol.label || 'Unknown')}</td>
+                                    <td>${escapeHtml(vol.mount_point || '-')}</td>
                                     <td>${vol.total_gb ? vol.total_gb.toFixed(1) + ' GB' : '-'}</td>
                                     <td>${vol.used_gb ? vol.used_gb.toFixed(1) + ' GB' : '-'}</td>
                                     <td>${vol.available_gb ? vol.available_gb.toFixed(1) + ' GB' : '-'}</td>
@@ -4397,6 +4402,7 @@
                                             <span style="font-size: 0.85rem; font-weight: 600; min-width: 40px;">${Math.round(usePercent)}%</span>
                                         </div>
                                     </td>
+                                    <td style="font-size: 0.85rem; color: #6b7280;">${formatDateTime(vol.updated_at)}</td>
                                 </tr>
                             `;
                         }).join('');
