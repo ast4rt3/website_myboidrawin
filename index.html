@@ -1268,150 +1268,11 @@
                 display: none !important;
             }
         }
-
-        /* Login Overlay */
-        #loginOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .login-box {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            border: 2px solid var(--card-border);
-        }
-
-        .login-box h2 {
-            margin-bottom: 20px;
-            color: var(--text-heading);
-            font-size: 2rem;
-        }
-
-        .login-box .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .login-box .btn {
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .shake {
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-            0% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-10px);
-            }
-
-            50% {
-                transform: translateX(10px);
-            }
-
-            75% {
-                transform: translateX(-10px);
-            }
-
-            100% {
-                transform: translateX(0);
-            }
-        }
-
-        /* Custom Autocomplete Dropdown */
-        .autocomplete-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: var(--input-bg);
-            border: 2px solid var(--input-border);
-            border-top: none;
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            display: none;
-            text-align: left;
-            margin-top: -2px;
-            /* Overlap border */
-        }
-
-        .autocomplete-item {
-            padding: 12px 16px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--card-border);
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background 0.2s;
-        }
-
-        .autocomplete-item:last-child {
-            border-bottom: none;
-            border-radius: 0 0 8px 8px;
-        }
-
-        .autocomplete-item:hover {
-            background-color: var(--empty-state-bg);
-        }
-
-        .autocomplete-item i {
-            color: #4f46e5;
-            font-size: 1rem;
-        }
-
-        .autocomplete-subtext {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
     </style>
 </head>
 
 <body>
-    <!-- Login Overlay -->
-    <div id="loginOverlay">
-        <div class="login-box">
-            <h2><i class="fas fa-shield-alt" style="color: #4f46e5; margin-right: 10px;"></i>Login</h2>
-            <form onsubmit="handleLogin(event)" action="#" method="post">
-                <div class="form-group" style="position: relative;" id="usernameGroup">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required autocomplete="username"
-                        placeholder="Enter username">
-                    <!-- Dropdown will be injected here -->
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required autocomplete="current-password"
-                        placeholder="Enter password">
-                </div>
-                <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
-                    <input type="checkbox" id="rememberMe" style="width: auto; margin: 0;">
-                    <label for="rememberMe" style="margin: 0; cursor: pointer;">Remember Me</label>
-                </div>
-                <button type="submit" class="btn">Login</button>
-            </form>
-        </div>
-    </div>
+    <!-- Login Overlay Removed -->
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
@@ -1451,10 +1312,7 @@
                 </button>
             </div>
             <div class="navbar-right">
-                <button class="navbar-item" onclick="logout()" title="Logout"
-                    style="margin-right: 10px; color: #ef4444; padding: 8px 15px;">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
+
                 <input type="text" id="pcName" placeholder="PC Name" class="navbar-input" style="width: 150px;">
                 <input type="date" id="selectedDate" class="navbar-input">
                 <button onclick="loadData()"
@@ -1917,7 +1775,7 @@
                     // Supabase configuration
                     const SUPABASE_URL = 'https://uxhefdybgjluzkbodryd.supabase.co';
                     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4aGVmZHliZ2psdXprYm9kcnlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MDExMzAsImV4cCI6MjA3NjM3NzEzMH0.jvFSOUUNiWvLFdPHplVuRgvKkvt2zlet6NA_x3mLaJM';
-                    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
                     function sanitizePcNameInput(value) {
                         return (value || '').trim();
@@ -1933,7 +1791,7 @@
 
                     async function fetchPcRowCaseInsensitive(tableName, pcNameFilter) {
                         if (!pcNameFilter) return null;
-                        const { data, error } = await supabase
+                        const { data, error } = await supabaseClient
                             .from(tableName)
                             .select('*')
                             .ilike('pc_name', pcNameFilter)
@@ -2044,7 +1902,7 @@
                             const endDate = localEnd.toISOString();
 
                             // Fetch app usage data
-                            const { data: appData } = await supabase
+                            const { data: appData } = await supabaseClient
                                 .from('app_usage_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -2053,7 +1911,7 @@
                                 .order('start_time', { ascending: false });
 
                             // Fetch idle logs
-                            const { data: idleData } = await supabase
+                            const { data: idleData } = await supabaseClient
                                 .from('idle_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -2062,7 +1920,7 @@
                                 .order('start_time', { ascending: false });
 
                             // Fetch browser search logs
-                            const { data: searchData } = await supabase
+                            const { data: searchData } = await supabaseClient
                                 .from('browser_search_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -2071,7 +1929,7 @@
                                 .order('timestamp', { ascending: false });
 
                             // Fetch temperature logs
-                            const { data: tempData } = await supabase
+                            const { data: tempData } = await supabaseClient
                                 .from('temperature_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -2080,7 +1938,7 @@
                                 .order('created_at', { ascending: false });
 
                             // Fetch power/voltage logs
-                            const { data: powerVoltageData } = await supabase
+                            const { data: powerVoltageData } = await supabaseClient
                                 .from('power_voltage_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -2465,7 +2323,7 @@
 
                         try {
                             // Fetch all PC statuses
-                            const { data: pcStatuses, error: statusError } = await supabase
+                            const { data: pcStatuses, error: statusError } = await supabaseClient
                                 .from('pc_status')
                                 .select('*')
                                 .order('pc_name', { ascending: true });
@@ -2475,7 +2333,7 @@
                             }
 
                             // Fetch all system info
-                            const { data: systemInfos, error: systemError } = await supabase
+                            const { data: systemInfos, error: systemError } = await supabaseClient
                                 .from('system_info')
                                 .select('*')
                                 .order('pc_name', { ascending: true });
@@ -2682,7 +2540,7 @@
 
                         try {
                             // 1. Fetch latest PC statuses
-                            const { data: pcStatuses, error: statusError } = await supabase
+                            const { data: pcStatuses, error: statusError } = await supabaseClient
                                 .from('pc_status')
                                 .select('*');
 
@@ -2761,7 +2619,7 @@
                                         barEl.style.backgroundColor = 'var(--bg-tertiary)';
                                     } else {
                                         // 3. Fetch latest temperature for this PC
-                                        const { data: tempData, error: tempError } = await supabase
+                                        const { data: tempData, error: tempError } = await supabaseClient
                                             .from('temperature_logs')
                                             .select('cpu_temperature')
                                             .eq('pc_name', pcName)
@@ -2893,7 +2751,7 @@
                             const startDate = localStart.toISOString();
                             const endDate = localEnd.toISOString();
 
-                            const { data: appData, error: appError } = await supabase
+                            const { data: appData, error: appError } = await supabaseClient
                                 .from('app_usage_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -2907,7 +2765,7 @@
                             }
 
                             // Fetch idle logs
-                            const { data: idleData, error: idleError } = await supabase
+                            const { data: idleData, error: idleError } = await supabaseClient
                                 .from('idle_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -2921,7 +2779,7 @@
                             }
 
                             // Fetch browser search logs
-                            const { data: searchData, error: searchError } = await supabase
+                            const { data: searchData, error: searchError } = await supabaseClient
                                 .from('browser_search_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -2934,7 +2792,7 @@
                             }
 
                             // Fetch temperature logs
-                            const { data: tempData, error: tempError } = await supabase
+                            const { data: tempData, error: tempError } = await supabaseClient
                                 .from('temperature_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -2947,7 +2805,7 @@
                             }
 
                             // Fetch power/voltage logs
-                            const { data: powerVoltageData, error: powerVoltageError } = await supabase
+                            const { data: powerVoltageData, error: powerVoltageError } = await supabaseClient
                                 .from('power_voltage_logs')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -4490,7 +4348,7 @@
                             }
 
                             // Fetch storage volumes
-                            const { data: storageData, error } = await supabase
+                            const { data: storageData, error } = await supabaseClient
                                 .from('disk_storage')
                                 .select('*')
                                 .ilike('pc_name', pcNameFilter)
@@ -4563,7 +4421,7 @@
                             const now = new Date();
                             const sixtySecondsAgo = new Date(now.getTime() - 60000);
 
-                            const { data: logs, error } = await supabase
+                            const { data: logs, error } = await supabaseClient
                                 .from('app_usage_logs')
                                 .select('cpu_percent, memory_usage_bytes, end_time')
                                 .ilike('pc_name', pcNameFilter)
@@ -4579,7 +4437,7 @@
                             const systemInfo = await fetchPcRowCaseInsensitive('system_info', pcNameFilter);
 
                             // Get latest stats
-                            const { data: latestLog } = await supabase
+                            const { data: latestLog } = await supabaseClient
                                 .from('app_usage_logs')
                                 .select('cpu_percent, memory_usage_bytes')
                                 .ilike('pc_name', pcNameFilter)
@@ -5000,153 +4858,7 @@
                             }
                         }
                     }
-                    // Login Logic
-                    function checkLogin() {
-                        const isLoggedIn = localStorage.getItem('isLoggedIn');
-                        const overlay = document.getElementById('loginOverlay');
 
-                        if (isLoggedIn === 'true') {
-                            overlay.style.display = 'none';
-                        } else {
-                            overlay.style.display = 'flex';
-                            // Do NOT auto-fill here on load as per user request
-                            // But ensure the "Remember Me" box is checked if they used it previously
-                            const savedUsername = localStorage.getItem('savedUsername');
-                            if (savedUsername) {
-                                document.getElementById('rememberMe').checked = true;
-                            }
-                        }
-                    }
-
-                    function setupInputBehavior() {
-                        const savedUsername = localStorage.getItem('savedUsername');
-                        const savedPassword = localStorage.getItem('savedPassword');
-
-                        const userTop = document.getElementById('username');
-                        const passTop = document.getElementById('password');
-                        const userGroup = document.getElementById('usernameGroup');
-
-                        if (savedUsername && userTop && userGroup) {
-                            // Create dropdown element
-                            const dropdown = document.createElement('div');
-                            dropdown.className = 'autocomplete-dropdown';
-                            dropdown.id = 'usernameDropdown';
-
-                            const item = document.createElement('div');
-                            item.className = 'autocomplete-item';
-                            item.innerHTML = `
-                                <i class="fas fa-user-circle"></i>
-                                <div>
-                                    <div style="font-weight: 600;">${savedUsername}</div>
-                                    <div class="autocomplete-subtext">Saved account</div>
-                                </div>
-                            `;
-
-                            item.onclick = (e) => {
-                                e.stopPropagation(); // Prevent ensuring validation immediately upon click
-                                userTop.value = savedUsername;
-                                if (passTop && savedPassword) passTop.value = savedPassword;
-                                document.getElementById('rememberMe').checked = true;
-                                dropdown.style.display = 'none';
-                                // Optional: focus password or login button
-                                if (passTop) passTop.focus();
-                            };
-
-                            dropdown.appendChild(item);
-                            userGroup.appendChild(dropdown);
-
-                            // Show on focus or click
-                            const showDropdown = () => {
-                                // Only show if empty or matching (simple logic for now)
-                                if (!userTop.value || userTop.value === savedUsername) {
-                                    dropdown.style.display = 'block';
-                                }
-                            };
-
-                            userTop.addEventListener('focus', showDropdown);
-                            userTop.addEventListener('click', showDropdown);
-
-                            // Hide on blur (delayed to allow click)
-                            document.addEventListener('click', (e) => {
-                                if (!userGroup.contains(e.target)) {
-                                    dropdown.style.display = 'none';
-                                }
-                            });
-
-                            // Hide when typing something else
-                            userTop.addEventListener('input', () => {
-                                if (userTop.value && userTop.value !== savedUsername) {
-                                    dropdown.style.display = 'none';
-                                } else if (!userTop.value) {
-                                    dropdown.style.display = 'block';
-                                }
-                            });
-                        }
-                    }
-
-                    function handleLogin(event) {
-                        event.preventDefault();
-                        const username = document.getElementById('username').value;
-                        const password = document.getElementById('password').value;
-                        const rememberMe = document.getElementById('rememberMe').checked;
-                        const loginBox = document.querySelector('.login-box');
-                        const btn = loginBox.querySelector('.btn');
-                        const originalBtnText = btn.innerHTML;
-
-                        // Show Loading State
-                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-                        btn.disabled = true;
-                        btn.style.opacity = '0.7';
-                        btn.style.cursor = 'wait';
-
-                        setTimeout(() => {
-                            // Validate credentials after delay
-                            if (username === 'admin' && password === 'admin') {
-                                localStorage.setItem('isLoggedIn', 'true');
-
-                                // Handle Remember Me
-                                if (rememberMe) {
-                                    localStorage.setItem('savedUsername', username);
-                                    localStorage.setItem('savedPassword', password);
-                                } else {
-                                    localStorage.removeItem('savedUsername');
-                                    localStorage.removeItem('savedPassword');
-                                }
-
-                                // Reset button state before hiding (in case they logout later)
-                                btn.innerHTML = originalBtnText;
-                                btn.disabled = false;
-                                btn.style.opacity = '1';
-                                btn.style.cursor = 'pointer';
-
-                                document.getElementById('loginOverlay').style.display = 'none';
-                            } else {
-                                // Reset button state
-                                btn.innerHTML = originalBtnText;
-                                btn.disabled = false;
-                                btn.style.opacity = '1';
-                                btn.style.cursor = 'pointer';
-
-                                loginBox.classList.add('shake');
-                                setTimeout(() => loginBox.classList.remove('shake'), 500);
-                                alert('Invalid credentials');
-                            }
-                        }, 1500); // 1.5 second loading delay
-                    }
-
-                    function logout() {
-                        localStorage.removeItem('isLoggedIn');
-                        // Clear inputs when logging out to ensure "start blank" experience
-                        document.getElementById('username').value = '';
-                        document.getElementById('password').value = '';
-                        checkLogin();
-                    }
-
-                    // Run check and setup on load
-                    window.addEventListener('load', () => {
-                        checkLogin();
-                        setupInputBehavior();
-                    });
                 </script>
 </body>
 
